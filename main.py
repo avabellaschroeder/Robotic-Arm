@@ -27,10 +27,19 @@ from kivy.core.window import Window
 from pidev.kivy import DPEAButton
 from pidev.kivy import PauseScreen
 from time import sleep
-import RPi.GPIO as GPIO 
-from pidev.stepper import stepper
-from pidev.Cyprus_Commands import Cyprus_Commands_RPi as cyprus
+from dpeaDPi.DPiComputer import *
+from dpeaDPi.DPiStepper import *
 
+# ////////////////////////////////////////////////////////////////
+# //                     HARDWARE SETUP                         //
+# ////////////////////////////////////////////////////////////////
+"""Stepper goes into MOTOR 0
+   Limit Sensor for Stepper Motor goes into HOME 0
+   Talon Motor Controller for Magnet goes into SERVO 1
+   Talon Motor Controller for Air Piston goes into SERVO 0
+   Tall Tower Limit Sensor goes in IN 2
+   Short Tower Limit Sensor goes in IN 1
+   """
 
 # ////////////////////////////////////////////////////////////////
 # //                      GLOBAL VARIABLES                      //
@@ -66,15 +75,13 @@ class MyApp(App):
 Builder.load_file('main.kv')
 Window.clearcolor = (.1, .1,.1, 1) # (WHITE)
 
-cyprus.open_spi()
 
 # ////////////////////////////////////////////////////////////////
 # //                    SLUSH/HARDWARE SETUP                    //
 # ////////////////////////////////////////////////////////////////
-
 sm = ScreenManager()
-arm = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20,
-             steps_per_unit=200, speed=1)
+
+
 
 # ////////////////////////////////////////////////////////////////
 # //                       MAIN FUNCTIONS                       //
@@ -82,9 +89,8 @@ arm = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_cur
 # ////////////////////////////////////////////////////////////////
 	
 class MainScreen(Screen):
-    version = cyprus.read_firmware_version()
     armPosition = 0
-    lastClick = time.clock()
+    lastClick = time.perf_counter()
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
@@ -92,7 +98,7 @@ class MainScreen(Screen):
 
     def debounce(self):
         processInput = False
-        currentTime = time.clock()
+        currentTime = time.perf_counter()
         if ((currentTime - self.lastClick) > DEBOUNCE):
             processInput = True
         self.lastClick = currentTime
@@ -111,8 +117,8 @@ class MainScreen(Screen):
         print("Move arm here")
 
     def homeArm(self):
-        arm.home(self.homeDirection)
-        
+        # arm.home(self.homeDirection)
+        pass
     def isBallOnTallTower(self):
         print("Determine if ball is on the top tower")
 
@@ -138,4 +144,3 @@ sm.add_widget(MainScreen(name = 'main'))
 # ////////////////////////////////////////////////////////////////
 
 MyApp().run()
-cyprus.close_spi()
