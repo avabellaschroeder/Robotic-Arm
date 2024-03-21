@@ -99,7 +99,7 @@ class MainScreen(Screen):
     def debounce(self):
         processInput = False
         currentTime = time.perf_counter()
-        if ((currentTime - self.lastClick) > DEBOUNCE):
+        if (currentTime - self.lastClick) > DEBOUNCE:
             processInput = True
         self.lastClick = currentTime
         return processInput
@@ -118,7 +118,8 @@ class MainScreen(Screen):
 
     def homeArm(self):
         # arm.home(self.homeDirection)
-        pass
+        self.hardarmhome()
+
     def isBallOnTallTower(self):
         print("Determine if ball is on the top tower")
 
@@ -127,6 +128,16 @@ class MainScreen(Screen):
         
     def initialize(self):
         print("Home arm and turn off magnet")
+
+# /////////////////////////////////////////////////////////
+# /////////////////////////////////////////////////////////
+
+    def hardarmhome(self, dpiStepper=None):
+        dpiStepper.enableMotors(True)
+        speed_in_steps_per_sec = 5500  # self.ids.rampSpeed.value
+        MaxDistanceToMoveInSteps = 46000
+        dpiStepper.moveToHomeInSteps(0, 1, speed_in_steps_per_sec, MaxDistanceToMoveInSteps)
+        dpiStepper.enableMotors(False)
 
     def resetColors(self):
         self.ids.armControl.color = YELLOW
