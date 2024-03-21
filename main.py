@@ -51,7 +51,7 @@ UP = False
 DOWN = True
 ON = True
 OFF = False
-YELLOW = .180, 0.188, 0.980, 1
+PINK = 1, 0.3, 0.5, 1
 BLUE = 0.917, 0.796, 0.380, 1
 CLOCKWISE = 0
 COUNTERCLOCKWISE = 1
@@ -73,7 +73,7 @@ class MyApp(App):
         return sm
 
 Builder.load_file('main.kv')
-Window.clearcolor = (.1, .1,.1, 1) # (WHITE)
+Window.clearcolor = (.1, .1, .1, 1) # (WHITE)
 
 
 # ////////////////////////////////////////////////////////////////
@@ -118,7 +118,8 @@ class MainScreen(Screen):
 
     def homeArm(self):
         # arm.home(self.homeDirection)
-        self.hardarmhome()
+        # self.hardarmhome()
+        pass
 
     def isBallOnTallTower(self):
         print("Determine if ball is on the top tower")
@@ -133,15 +134,15 @@ class MainScreen(Screen):
 # /////////////////////////////////////////////////////////
 
     def hardarmhome(self, dpiStepper=None):
-        dpiStepper.enableMotors(True)
-        speed_in_steps_per_sec = 5500  # self.ids.rampSpeed.value
-        MaxDistanceToMoveInSteps = 46000
-        dpiStepper.moveToHomeInSteps(0, 1, speed_in_steps_per_sec, MaxDistanceToMoveInSteps)
+        # dpiStepper.enableMotors(True)
+        # speed_in_steps_per_sec = 5500  # self.ids.rampSpeed.value
+        # MaxDistanceToMoveInSteps = 46000
+        # dpiStepper.moveToHomeInSteps(0, 1, speed_in_steps_per_sec, MaxDistanceToMoveInSteps)
         dpiStepper.enableMotors(False)
 
     def resetColors(self):
-        self.ids.armControl.color = YELLOW
-        self.ids.magnetControl.color = YELLOW
+        self.ids.armControl.color = PINK
+        self.ids.magnetControl.color = PINK
         self.ids.auto.color = BLUE
 
     def quit(self):
