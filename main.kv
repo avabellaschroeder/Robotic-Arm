@@ -41,7 +41,7 @@
             background_color: 0, 0, 0, 0
             background_normal: ''
             size_hint: None,None
-            size: 300,100
+            size: 200,100
             on_press: root.toggleArm()
             on_release: root.resetColors()
 
@@ -54,7 +54,7 @@
             background_color: 0, 0, 0, 0
             background_normal: ''
             size_hint: None,None
-            size: 300,100
+            size: 200,100
             on_press: root.toggleMagnet()
             on_release: root.resetColors()
 
@@ -68,10 +68,10 @@
             min: 0
             max: 2
             value: root.armPosition
-            step: 1
+            step: 3/7
             center_x: root.width * 0.6
             y: root.height * 0.15
-            size_hint_x: 7
+            size_hint_x: 3
             on_value: root.setArmPosition(self.value)
 
         ##################
