@@ -81,7 +81,13 @@ Window.clearcolor = (.1, .1, .1, 1) # (WHITE)
 # ////////////////////////////////////////////////////////////////
 sm = ScreenManager()
 
-
+# SERVO
+dpiComputer = DPiComputer()
+dpiComputer.initialize()
+# Stepper
+dpiStepper = DPiStepper()
+microstepping = 8
+dpiStepper.setMicrostepping(microstepping)
 
 # ////////////////////////////////////////////////////////////////
 # //                       MAIN FUNCTIONS                       //
@@ -106,9 +112,11 @@ class MainScreen(Screen):
 
     def toggleArm(self):
         print("Process arm movement here")
+        self.armair()
 
     def toggleMagnet(self):
         print("Process magnet here")
+        self.magnet()
         
     def auto(self):
         print("Run the arm automatically here")
@@ -132,6 +140,19 @@ class MainScreen(Screen):
 
 # /////////////////////////////////////////////////////////
 # /////////////////////////////////////////////////////////
+
+    def magnet(self):
+        i = 0
+        servo_number = 1
+        for i in range(180):
+            dpiComputer.writeServo(servo_number, i)
+            sleep(.02)
+# ////////////////////
+#     def armair(self):
+#         pass
+#
+#
+# ////////////////////
 
     def hardarmhome(self, dpiStepper=None):
         # dpiStepper.enableMotors(True)
