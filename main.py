@@ -112,7 +112,7 @@ class MainScreen(Screen):
 
     def toggleArm(self):
         print("Process arm movement here")
-        self.armair()
+        self.armupdown()
 
     def toggleMagnet(self):
         print("Process magnet here")
@@ -123,6 +123,7 @@ class MainScreen(Screen):
 
     def setArmPosition(self, position):
         print("Move arm here")
+        self.armhoriz()
 
     def homeArm(self):
         # arm.home(self.homeDirection)
@@ -137,6 +138,7 @@ class MainScreen(Screen):
         
     def initialize(self):
         print("Home arm and turn off magnet")
+        self.intializearmhor()
 
 # /////////////////////////////////////////////////////////
 # /////////////////////////////////////////////////////////
@@ -148,8 +150,28 @@ class MainScreen(Screen):
             dpiComputer.writeServo(servo_number, i)
             sleep(.02)
 # ////////////////////
-#     def armair(self):
+#     def armupdown(self):
 #         pass
+
+    def intializearmhor(self):
+        stepper_num = 0
+        dpiStepper.setBoardNumber(0)
+        # set stepper number & enable motors
+        gear_ratio = 1
+        motorStepPerRevolution = 1600 * gear_ratio
+        dpiStepper.setStepsPerRevolution(stepper_num, motorStepPerRevolution)
+        # set steps per rev
+        dpiStepper.setCurrentPositionInRevolutions(stepper_num, 0)
+
+        dpiStepper.setSpeedInRevolutionsPerSecond(stepper_num, 2)
+        accel_in_revolutions_per_sec_per_sec = 2.0
+        dpiStepper.setAccelerationInRevolutionsPerSecondPerSecond(stepper_num, accel_in_revolutions_per_sec_per_sec)
+        # set position and speed and accel
+
+    def armhoriz(self):
+        dpiStepper.enableMotors(True)
+        dpiStepper.moveToAbsolutePositionInRevolutions(0, 1, waitToFinishFlg=True)
+        dpiStepper.enableMotors(False)
 #
 #
 # ////////////////////
