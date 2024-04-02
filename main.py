@@ -80,6 +80,8 @@ Window.clearcolor = (.1, .1, .1, 1) # (WHITE)
 # //                    SLUSH/HARDWARE SETUP                    //
 # ////////////////////////////////////////////////////////////////
 sm = ScreenManager()
+arm = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20,
+             steps_per_unit=200, speed=1)
 
 # SERVO
 dpiComputer = DPiComputer()
@@ -126,9 +128,9 @@ class MainScreen(Screen):
         self.armhoriz()
 
     def homeArm(self):
-        # arm.home(self.homeDirection)
-        # self.hardarmhome()
-        pass
+        arm.home(self.homeDirection)
+        self.hardarmhome()
+
 
     def isBallOnTallTower(self):
         print("Determine if ball is on the top tower")
