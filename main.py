@@ -113,7 +113,15 @@ class MainScreen(Screen):
 
     def toggleArm(self):
         print("Process arm movement here")
-        self.armupdown()
+        global UP
+        if UP == False:
+            UP = True
+            self.ids.armControl.text = 'Lower Arm'
+            self.armGoUp()
+        else:
+            UP = False
+            self.ids.armControl.text = 'Raise Arm'
+            self.armGoDown()
 
     def toggleMagnet(self):
         print("Process magnet here")
