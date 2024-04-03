@@ -80,16 +80,15 @@ Window.clearcolor = (.1, .1, .1, 1) # (WHITE)
 # //                    SLUSH/HARDWARE SETUP                    //
 # ////////////////////////////////////////////////////////////////
 sm = ScreenManager()
-arm = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20,
-             steps_per_unit=200, speed=1)
 
 # SERVO
 dpiComputer = DPiComputer()
 dpiComputer.initialize()
 # Stepper
-dpiStepper = DPiStepper()
+arm = DPiStepper()
+arm.initialize()
 microstepping = 8
-dpiStepper.setMicrostepping(microstepping)
+arm.setMicrostepping(microstepping)
 
 # ////////////////////////////////////////////////////////////////
 # //                       MAIN FUNCTIONS                       //
@@ -123,14 +122,12 @@ class MainScreen(Screen):
     def auto(self):
         print("Run the arm automatically here")
 
-    def setArmPosition(self, position):
+    def setArmPosition(self):
         print("Move arm here")
         self.armhoriz()
 
     def homeArm(self):
-        arm.home(self.homeDirection)
         self.hardarmhome()
-
 
     def isBallOnTallTower(self):
         print("Determine if ball is on the top tower")
@@ -140,7 +137,7 @@ class MainScreen(Screen):
         
     def initialize(self):
         print("Home arm and turn off magnet")
-        self.intializearmhor()
+        self.homeArm()
 
 # /////////////////////////////////////////////////////////
 # /////////////////////////////////////////////////////////
@@ -152,38 +149,33 @@ class MainScreen(Screen):
             dpiComputer.writeServo(servo_number, i)
             sleep(.02)
 # ////////////////////
-#     def armupdown(self):
-#         pass
 
-    def intializearmhor(self):
-        stepper_num = 0
-        dpiStepper.setBoardNumber(0)
-        # set stepper number & enable motors
-        gear_ratio = 1
-        motorStepPerRevolution = 1600 * gear_ratio
-        dpiStepper.setStepsPerRevolution(stepper_num, motorStepPerRevolution)
-        # set steps per rev
-        dpiStepper.setCurrentPositionInRevolutions(stepper_num, 0)
+    def armhoriz(self, position):
+        self.armPosition = position
+        arm.setSpeedInStepsPerSecond(0, 1600)
+        # if position == 0:
+        #     arm.moveToAbsolutePositionInSteps(0, 0, True)
+        # elif
 
-        dpiStepper.setSpeedInRevolutionsPerSecond(stepper_num, 2)
-        accel_in_revolutions_per_sec_per_sec = 2.0
-        dpiStepper.setAccelerationInRevolutionsPerSecondPerSecond(stepper_num, accel_in_revolutions_per_sec_per_sec)
-        # set position and speed and accel
 
-    def armhoriz(self):
-        dpiStepper.enableMotors(True)
-        dpiStepper.moveToAbsolutePositionInRevolutions(0, 1, waitToFinishFlg=True)
-        dpiStepper.enableMotors(False)
+
+    def armGoDown(self):
+        arm.enableMotors(True)
+        dpiComputer.writeServo(1, 180)
+        arm.enableMotors(False)
+
+    def armGoUp(self):
+        arm.enableMotors(True)
+        dpiComputer.writeServo(1, 90)
+        arm.enableMotors(False)
 #
 #
 # ////////////////////
 
-    def hardarmhome(self, dpiStepper=None):
-        # dpiStepper.enableMotors(True)
-        # speed_in_steps_per_sec = 5500  # self.ids.rampSpeed.value
-        # MaxDistanceToMoveInSteps = 46000
-        # dpiStepper.moveToHomeInSteps(0, 1, speed_in_steps_per_sec, MaxDistanceToMoveInSteps)
-        dpiStepper.enableMotors(False)
+    def hardarmhome(self):
+        arm.enableMotors(True)
+        arm.moveToHomeInSteps(0, -1, 1600, 3200)
+        arm.enableMotors(False)
 
     def resetColors(self):
         self.ids.armControl.color = PINK
