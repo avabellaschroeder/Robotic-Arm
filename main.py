@@ -87,6 +87,7 @@ dpiComputer.initialize()
 # Stepper
 arm = DPiStepper()
 arm.initialize()
+arm.enableMotors(True)
 microstepping = 8
 arm.setMicrostepping(microstepping)
 
@@ -94,7 +95,7 @@ arm.setMicrostepping(microstepping)
 # //                       MAIN FUNCTIONS                       //
 # //             SHOULD INTERACT DIRECTLY WITH HARDWARE         //
 # ////////////////////////////////////////////////////////////////
-	
+
 class MainScreen(Screen):
     armPosition = 0
     lastClick = time.perf_counter()
@@ -130,9 +131,21 @@ class MainScreen(Screen):
     def auto(self):
         print("Run the arm automatically here")
 
-    def setArmPosition(self):
+    def setArmPosition(self, position):
         print("Move arm here")
-        self.armhoriz()
+        arm.enableMotors(True)
+        self.ids.armControlLabel.text = 'Arm Position: ' + str(self.armPosition)
+        self.armPosition = position
+        arm.setSpeedInStepsPerSecond(0, 1600)
+        if position == 0:
+            arm.moveToAbsolutePositionInSteps(0, 0, True)
+        elif position == 1:
+            arm.moveToAbsolutePositionInSteps(0, 800, True)
+        elif position == 2:
+            arm.moveToAbsolutePositionInSteps(0, 1300, True)
+        else:
+            print("something aint right")
+        arm.enableMotors(False)
 
     def homeArm(self):
         self.hardarmhome()
@@ -146,6 +159,7 @@ class MainScreen(Screen):
     def initialize(self):
         print("Home arm and turn off magnet")
         self.homeArm()
+        
 
 # /////////////////////////////////////////////////////////
 # /////////////////////////////////////////////////////////
@@ -157,15 +171,6 @@ class MainScreen(Screen):
             dpiComputer.writeServo(servo_number, i)
             sleep(.02)
 # ////////////////////
-
-    def armhoriz(self, position):
-        self.armPosition = position
-        arm.setSpeedInStepsPerSecond(0, 1600)
-        # if position == 0:
-        #     arm.moveToAbsolutePositionInSteps(0, 0, True)
-        # elif
-
-
 
     def armGoDown(self):
         arm.enableMotors(True)
