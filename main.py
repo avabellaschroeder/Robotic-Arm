@@ -1,7 +1,6 @@
 # ////////////////////////////////////////////////////////////////
 # //                     IMPORT STATEMENTS                      //
 # ////////////////////////////////////////////////////////////////
-
 import math
 import sys
 import time
@@ -40,7 +39,6 @@ from dpeaDPi.DPiStepper import *
    Tall Tower Limit Sensor goes in IN 2
    Short Tower Limit Sensor goes in IN 1
    """
-
 # ////////////////////////////////////////////////////////////////
 # //                      GLOBAL VARIABLES                      //
 # //                         CONSTANTS                          //
@@ -126,10 +124,26 @@ class MainScreen(Screen):
 
     def toggleMagnet(self):
         print("Process magnet here")
-        self.magnet()
+        global ON
+        if ON == True:
+            self.ids.magnetControl.text = "Drop Ball"
+            ON = False
+            self.turnMagnetOn()
+        else:
+            self.ids.magnetControl.text = "Hold Ball"
+            ON = True
+            self.turnMagnetOff()
         
     def auto(self):
         print("Run the arm automatically here")
+        if self.isBallOnTallTower():
+            self.armPos0()
+            self.armGoDown()
+            self.turnMagnetOn()
+            sleep(1)
+            self.armGoUp()
+        elif self.isballOnTallTower():
+            self.armPos1()
 
     def setArmPosition(self, position):
         print("Move arm here")
@@ -138,11 +152,11 @@ class MainScreen(Screen):
         self.armPosition = position
         arm.setSpeedInStepsPerSecond(0, 1600)
         if position == 0:
-            arm.moveToAbsolutePositionInSteps(0, 0, True)
+            self.armPos0()
         elif position == 1:
-            arm.moveToAbsolutePositionInSteps(0, 800, True)
+            self.armPos1()
         elif position == 2:
-            arm.moveToAbsolutePositionInSteps(0, 1300, True)
+            self.armPos2()
         else:
             print("something aint right")
         arm.enableMotors(False)
@@ -152,43 +166,56 @@ class MainScreen(Screen):
 
     def isBallOnTallTower(self):
         print("Determine if ball is on the top tower")
+        if dpiComputer.readDigitalIn(dpiComputer.IN_CONNECTOR__IN_2) == 0:
+            return True
+        else:
+            return False
 
     def isBallOnShortTower(self):
         print("Determine if ball is on the bottom tower")
-        
+        if dpiComputer.readDigitalIn(dpiComputer.IN_CONNECTOR__IN_1) == 0:
+            return True
+        else:
+            return False
+
     def initialize(self):
         print("Home arm and turn off magnet")
+        self.turnMagnetOff()
+        self.armGoUp()
         self.homeArm()
-        
+
 
 # /////////////////////////////////////////////////////////
 # /////////////////////////////////////////////////////////
 
-    def magnet(self):
-        i = 0
-        servo_number = 1
-        for i in range(180):
-            dpiComputer.writeServo(servo_number, i)
-            sleep(.02)
+    def turnMagnetOn(self):
+        dpiComputer.writeServo(0, 180)
+
+    def turnMagnetOff(self):
+        dpiComputer.writeServo(0, 90)
 # ////////////////////
 
     def armGoDown(self):
-        arm.enableMotors(True)
         dpiComputer.writeServo(1, 180)
-        arm.enableMotors(False)
 
     def armGoUp(self):
-        arm.enableMotors(True)
         dpiComputer.writeServo(1, 90)
-        arm.enableMotors(False)
-#
-#
-# ////////////////////
 
     def hardarmhome(self):
         arm.enableMotors(True)
         arm.moveToHomeInSteps(0, -1, 1600, 3200)
         arm.enableMotors(False)
+
+    def armPos0(self):
+        arm.moveToAbsolutePositionInSteps(0, 0, True)
+    def armPos1(self):
+        arm.moveToAbsolutePositionInSteps(0, 800, True)
+    def armPos2(self):
+        arm.moveToAbsolutePositionInSteps(0, 1300, True)
+
+
+    # ////////////////////
+
 
     def resetColors(self):
         self.ids.armControl.color = PINK
