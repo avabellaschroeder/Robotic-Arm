@@ -129,6 +129,7 @@ class MainScreen(Screen):
             self.ids.magnetControl.text = "Drop Ball"
             ON = False
             self.turnMagnetOn()
+            print("BLAH")
         else:
             self.ids.magnetControl.text = "Hold Ball"
             ON = True
