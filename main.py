@@ -137,15 +137,51 @@ class MainScreen(Screen):
         
     def auto(self):
         print("Run the arm automatically here")
+        arm.setSpeedInStepsPerSecond(0, 1600)
         if self.isBallOnTallTower():
-            self.armPos0()
+            # self.armPos0()
+            arm.moveToAbsolutePositionInSteps(0, 800, True)
+            sleep(.1)
             self.armGoDown()
             self.turnMagnetOn()
-            sleep(1)
+            time.sleep(2)
             self.armGoUp()
-        elif self.isballOnTallTower():
-            self.armPos1()
+            time.sleep(.5)
+            print("test ONE")
 
+            self.armPos2()
+            # arm.moveToAbsolutePositionInSteps(0, 1300, True)
+            self.armGoDown()
+            time.sleep(1)
+            self.turnMagnetOff()
+            sleep(.5)
+            self.armGoUp()
+            self.hardarmhome()
+            print("text TWOOOO")
+        elif self.isBallOnShortTower():
+            # self.armPos2()
+            arm.moveToAbsolutePositionInSteps(0, 1300, True)
+            sleep(.1)
+            self.armGoDown()
+            self.turnMagnetOn()
+            time.sleep(3)
+            self.armGoUp()
+            time.sleep(.5)
+            print("test ONE")
+
+            # self.armPos1()
+            arm.moveToAbsolutePositionInSteps(0, 800, True)
+            self.armGoDown()
+            time.sleep(1)
+            self.turnMagnetOff()
+            sleep(.5)
+            self.armGoUp()
+            self.hardarmhome()
+            print("text TWOOOO")
+            print("RAwWR")
+        else:
+            print("no ball detected")
+            print("please put ball on a tower and try again")
     def setArmPosition(self, position):
         print("Move arm here")
         arm.enableMotors(True)
@@ -190,17 +226,17 @@ class MainScreen(Screen):
 # /////////////////////////////////////////////////////////
 
     def turnMagnetOn(self):
-        dpiComputer.writeServo(0, 180)
+        dpiComputer.writeServo(1, 180)
 
     def turnMagnetOff(self):
-        dpiComputer.writeServo(0, 90)
+        dpiComputer.writeServo(1, 90)
 # ////////////////////
 
     def armGoDown(self):
-        dpiComputer.writeServo(1, 180)
+        dpiComputer.writeServo(0, 180)
 
     def armGoUp(self):
-        dpiComputer.writeServo(1, 90)
+        dpiComputer.writeServo(0, 90)
 
     def hardarmhome(self):
         arm.enableMotors(True)
