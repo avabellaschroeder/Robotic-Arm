@@ -217,6 +217,7 @@ class MainScreen(Screen):
 
     def initialize(self):
         print("Home arm and turn off magnet")
+        arm.enableMotors(True)
         self.turnMagnetOff()
         self.armGoUp()
         self.homeArm()
@@ -241,7 +242,6 @@ class MainScreen(Screen):
     def hardarmhome(self):
         arm.enableMotors(True)
         arm.moveToHomeInSteps(0, -1, 1600, 3200)
-        arm.enableMotors(False)
 
     def armPos0(self):
         arm.moveToAbsolutePositionInSteps(0, 0, True)
